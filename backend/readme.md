@@ -1,5 +1,5 @@
-## Instalar os pacotes
+# Instalar os pacotes
 
-# pip install fastapi
+## pip install fastapi
 
-# pip install "uvicorn[standard]"
+## pip install "uvicorn[standard]"

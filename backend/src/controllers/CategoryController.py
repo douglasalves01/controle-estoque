@@ -7,11 +7,12 @@ class CategoryController:
     def createCategory(category):
         #criação de categoria
         try:
-             with CategoryController.cursor as cursor:
-                cursor.executemany("INSERT INTO tblcategoria (cateogria) VALUES (:1)", category)
-                print(cursor.rowcount, "Rows Inserted")
+                CategoryController.cursor.execute("INSERT INTO TBLCATEGORIA (CATEGORIA) VALUES (:1)", [category]) 
+                CategoryController.connection.commit()  
+                print(CategoryController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
-            print("Erro ao criar tabela estoque:", e)
-       
-        print(f'aqui e a categoria de {category}')
+            print("Erro na inserção:", e)
         pass
+        
+
+  

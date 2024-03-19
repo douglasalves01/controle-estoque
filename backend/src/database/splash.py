@@ -7,7 +7,7 @@ cursor = connection.cursor()
 with cursor as cursor:
     try:
         cursor.execute("""
-            create table tblestoque (
+            create table if not exists tblestoque (
                 id number generated always as identity,
                 estoque_atual number(5),
                 estoque_minimo number(5),
@@ -21,7 +21,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tbltelefone (
+            create table if not exists tbltelefone (
                 id number generated always as identity,
                 telefone varchar2(12),                   
                 primary key (id))""")
@@ -31,7 +31,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tblfornecedor (
+            create table if not exists tblfornecedor (
                 id number generated always as identity,
                 CNPJ varchar2(14),                   
                 razao_social varchar2(100),                   
@@ -46,7 +46,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tblusuario (
+            create table if not exists tblusuario (
                 id number generated always as identity,
                 nome varchar2(30),                   
                 senha varchar2(20),                                       
@@ -57,7 +57,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tblcategoria (
+            create table if not exists tblcategoria (
                 id number generated always as identity,
                 categoria varchar2(20),                                   
                 primary key (id))""")
@@ -67,7 +67,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tblproduto (
+            create table if not exists tblproduto (
                 id number generated always as identity,
                 produto varchar2(20),                   
                 valor decimal(10,2),                   
@@ -86,7 +86,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table tblcontroleestoque (
+            create table if not exists tblcontroleestoque (
                 id number generated always as identity,
                 tipo_transacao varchar2(20),                   
                 data_hora_transacao date,                   
@@ -101,4 +101,5 @@ with cursor as cursor:
         print("Erro ao criar tabela controle estoque:", e)
 
 # Fechar a conexão
+connection.commit()
 connection.close()
