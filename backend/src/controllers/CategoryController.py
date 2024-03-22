@@ -5,6 +5,7 @@ from fastapi import HTTPException
 class CategoryController:
     connection = conn()
     cursor = connection.cursor()
+    #metodo para salvar uma categoria
     @staticmethod
     def createCategory(category):
         #criação de categoria
@@ -24,7 +25,8 @@ class CategoryController:
             print(CategoryController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao inserir categoria no banco de dados: " + str(e))
-        
+    
+    #método para retornar todas as categorias    
     @staticmethod
     def getAllCategory():
         try:
@@ -34,6 +36,7 @@ class CategoryController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar categorias do banco de dados: " + str(e))
     
+    #metodo para editar uma categoria
     @staticmethod
     def updateCategory(category, id):
         try:
@@ -43,6 +46,8 @@ class CategoryController:
             CategoryController.connection.commit()
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar categorias do banco de dados: " + str(e))
+    
+    #metodo para deletar uma categoria
     @staticmethod
     def deleteCategory(id):
         try:

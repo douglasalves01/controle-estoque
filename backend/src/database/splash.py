@@ -7,21 +7,23 @@ cursor = connection.cursor()
 with cursor as cursor:
     try:
         cursor.execute("""
-            create table if not exists tblestoque (
+            create table tblestoque (
                 id number generated always as identity,
                 estoque_atual number(5),
                 estoque_minimo number(5),
                 localizacao varchar2(100),
                 data_entrada date,
-                data_ultima_atualizacao date,                   
-                primary key (id))""")
+                data_ultima_atualizacao date,
+                id_produto number,                   
+                primary key (id),
+                foreign key (id_produto) references tblproduto(id))""")
         print("Tabela estoque criada")
     except DatabaseError as e:
         print("Erro ao criar tabela estoque:", e)
 
     try:
         cursor.execute("""
-            create table if not exists tbltelefone (
+            create table tbltelefone (
                 id number generated always as identity,
                 telefone varchar2(12),                   
                 primary key (id))""")
@@ -31,7 +33,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table if not exists tblfornecedor (
+            create table tblfornecedor (
                 id number generated always as identity,
                 CNPJ varchar2(14),                   
                 razao_social varchar2(100),                   
@@ -46,7 +48,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table if not exists tblusuario (
+            create table tblusuario (
                 id number generated always as identity,
                 nome varchar2(30),                   
                 senha varchar2(20),                                       
@@ -57,7 +59,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table if not exists tblcategoria (
+            create table tblcategoria (
                 id number generated always as identity,
                 categoria varchar2(20),                                   
                 primary key (id))""")
@@ -67,7 +69,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table if not exists tblproduto (
+            create table tblproduto (
                 id number generated always as identity,
                 produto varchar2(20),                   
                 valor decimal(10,2),                   
@@ -86,7 +88,7 @@ with cursor as cursor:
 
     try:
         cursor.execute("""
-            create table if not exists tblcontroleestoque (
+            create table tblcontroleestoque (
                 id number generated always as identity,
                 tipo_transacao varchar2(20),                   
                 data_hora_transacao date,                   
