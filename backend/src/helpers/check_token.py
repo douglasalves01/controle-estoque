@@ -12,7 +12,7 @@ ALGORITHM =os.getenv('ALGORITHM')
 def checkToken(request:Request):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Acesso negado!",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
