@@ -3,6 +3,11 @@ from helpers.get_user_by_token import getUserByToken
 from database.conn import conn
 from fastapi import HTTPException
 from oracledb import DatabaseError
+#admin = tudo liberado
+#editor = cadastro/editar/excluir liberado 
+#estoque = movimentações/relatórios/estoque
+#supervisor = tudo liberado, menos a parte de criar usuário
+
 
 def verifyAccess(request:Request, nivel_description):
     #vou receber o nivel do usuario e a descração do nivel
@@ -34,8 +39,3 @@ def verifyAccess(request:Request, nivel_description):
 
       
     
-#admin = tudo liberado
-#nível1 = só vendas 
-#nível2 = movimentações e relatórios
-#nível3 = tudo liberado, menos a parte de criar usuário
-
