@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPBearer
 from fastapi import Request
 from helpers.get_token import get_token
 from jose import JWTError, jwt
@@ -9,12 +9,7 @@ load_dotenv()
 security = HTTPBearer()
 SECRET_KEY =os.getenv('SECRET_KEY')
 ALGORITHM =os.getenv('ALGORITHM')
-def checkToken(request:Request):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Acesso negado!",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+def getUserByToken(request:Request):
     try:
         token =get_token(request)
      
@@ -22,9 +17,9 @@ def checkToken(request:Request):
             raise HTTPException(status_code=401, detail="Acesso negado!")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if not payload:
-            raise HTTPException(status_code=422, detail="Acesso Negado!")
-        return payload
+            raise HTTPException(status_code=422, detail="Acesso negado!")
+        return payload['sub']
         #veirificar se o token é válido
-    except JWTError:
-        raise credentials_exception
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
     

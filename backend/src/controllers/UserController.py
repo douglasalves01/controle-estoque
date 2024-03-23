@@ -13,12 +13,12 @@ class UserController:
     load_dotenv()
     connection = conn()
     cursor = connection.cursor()
-    ACCESS_TOKEN_EXPIRE_MINUTES =os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
+    
     @staticmethod
     def login(name,password):
     #login
         try:
-            ACCESS_TOKEN_EXPIRE_MINUTES = 30
+            ACCESS_TOKEN_EXPIRE_MINUTES =os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
             pwd_context=CryptContext(schemes=['bcrypt'])
             #verificar se a name veio vazio
             if(name is None or name==""):
@@ -39,7 +39,7 @@ class UserController:
             if not resultVerify:
                 raise HTTPException(status_code=422, detail="Senha inválida!") 
                           
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token_expires = timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
             access_token = create_access_token(data={"sub": name}, expires_delta=access_token_expires)
             return access_token
             #validar a senha digitada com o hahs do banco
@@ -47,7 +47,7 @@ class UserController:
             raise HTTPException(status_code=500, detail="Erro ao fazer login: " + str(e))
         
     @staticmethod
-    def register(name, password):
+    def register(name, password,id_nivelacesso):
         try:
             #verificar se a name veio vazio
             pwd_context=CryptContext(schemes=['bcrypt'])
@@ -63,10 +63,10 @@ class UserController:
             #gerando hashed de senha
             hashed_senha=pwd_context.hash(password)
             #Inserir usuário no banco de dados
-            UserController.cursor.execute("INSERT INTO TBLUSUARIO (NOME,SENHA) VALUES (:1,:2)", [name,hashed_senha]) 
+            UserController.cursor.execute("INSERT INTO TBLUSUARIO (NOME,SENHA,ID_NIVELACESSO) VALUES (:1,:2,:3)", [name,hashed_senha,id_nivelacesso]) 
             UserController.connection.commit()  
             print(UserController.cursor.rowcount, "Rows Inserted")
         
         except DatabaseError as e:
-            raise HTTPException(status_code=500, detail="Erro ao inserir categoria no banco de dados: " + str(e))
+            raise HTTPException(status_code=500, detail="Erro ao cadastrar novo usuário no banco de dados: " + str(e))
         
