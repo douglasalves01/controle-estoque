@@ -1,0 +1,677 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de controle de estoque",
+    "description": "Essa API tem como objetico um sistema de controle de estoque",
+    "termsOfService": "http://localhost:3000/terms",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/",
+      "description": "API de produção"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "Login de usuário",
+        "description": "Essa rota será responsável logar um usuário no sistema",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "422": {
+            "description": "Digite outro usuário"
+          },
+          "421": {
+            "description": "Senha inválida"
+          },
+          "20": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Login"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categorias": {
+      "get": {
+        "summary": "Retorno de categorias",
+        "description": "Essa rota será responsável por retornar as categorias",
+        "tags": ["Categorias"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cadastrar/categoria": {
+      "post": {
+        "summary": "Cadastro de categoria",
+        "description": "Essa rota será responsável por cadastrar uma nova categoria",
+        "tags": ["Categorias"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Categoria"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "description": "categoria",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Algum campo está faltando"
+          },
+          "500": {
+            "description": "Erro ao inserir categoria no banco de dados!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Categoria"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/editar/categoria/:id": {
+      "put": {
+        "summary": "Atualizar categoria",
+        "description": "Essa rota será responsável por editar uma categoria",
+        "tags": ["Categorias"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da categoria a ser editada",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "description": "Nova categoria",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/excluir/categoria/:id": {
+      "delete": {
+        "summary": "Exclusão de categoria",
+        "description": "Essa rota será responsável por excluir uma categoria",
+        "tags": ["Categorias"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da categoria a ser excluída",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/fornecedores": {
+      "get": {
+        "summary": "Retorno de fornecedores",
+        "description": "Essa rota será responsável retornar todos os fornecedores do banco",
+        "tags": ["Fornecedor"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Error ao retornar fornecedores do bando de dados:"
+          }
+        }
+      }
+    },
+    "/cadastrar/fornecedor": {
+      "post": {
+        "summary": "Cadastro de fornecedor",
+        "description": "Essa rota será responsável por cadastrar um novo fornecedor",
+        "tags": ["Fornecedor"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fornecedor"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "CNPJ",
+            "in": "path",
+            "description": "CNPJ do fornecedor a ser cadastrado",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "razao_social",
+            "in": "path",
+            "description": "Razão Social",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nome_fantasia",
+            "in": "path",
+            "description": "Nome Fantasia",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endereco",
+            "in": "path",
+            "description": "Endereço",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "telefone",
+            "in": "path",
+            "description": "Telefone",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Algum campo está faltando"
+          },
+          "421": {
+            "description": "Este fornecedor já existe!"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/excluir/fornecedor": {
+      "delete": {
+        "summary": "Exclusao de fornecedor",
+        "description": "Essa rota será responsável por excluir um fornecedor",
+        "tags": ["Fornecedor"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do fornecedor a ser excluído",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK!"
+          },
+          "500": {
+            "description": "Erro ao excluir fornecedor!"
+          }
+        }
+      }
+    },
+    "/editar/fornecedor/:id": {
+      "put": {
+        "summary": "Atualizar fornecedor",
+        "description": "Essa rota será responsável por editar um fornecedor",
+        "tags": ["Fornecedor"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do fornecedor a ser excluído",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CNPJ",
+            "in": "path",
+            "description": "CNPJ do fornecedor a ser cadastrado",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "razao_social",
+            "in": "path",
+            "description": "Razão Social",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nome_fantasia",
+            "in": "path",
+            "description": "Nome Fantasia",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endereco",
+            "in": "path",
+            "description": "Endereço",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "telefone",
+            "in": "path",
+            "description": "Telefone",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/controle-estoque": {
+      "get": {
+        "summary": "Retorno de movimentações",
+        "description": "Essa rota será responsável retornar todas movimentaçãoes do estoque",
+        "tags": ["Controle Estoque"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Error ao retornar moviemntações do bando de dados:"
+          }
+        }
+      }
+    },
+    "/controle-estoque/:id": {
+      "get": {
+        "summary": "Retorno de movimentações por produto",
+        "description": "Essa rota será responsável por retornar as movimentações de um produto",
+        "tags": ["Controle Estoque"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do produto a ser buscado nas movimentações",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/controle-estoque/movimentacao/:id": {
+      "post": {
+        "summary": "Entrada de estoque por produto",
+        "description": "Essa rota será responsável por cadastrar uma nova movimentação",
+        "tags": ["Controle Estoque"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ControleEstoques"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id_produto",
+            "in": "path",
+            "description": "ID do produto a ser cadastrado uma nova movimentação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipo_transacao",
+            "in": "path",
+            "description": "Tipo da transação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "data_hora_transacao",
+            "in": "path",
+            "description": "Data e hora da transação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "motivo_transacao",
+            "in": "path",
+            "description": "Motivo da transação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "description": "Id do usuário responsável pela movimentação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "422": {
+            "description": "Algum campo está faltando"
+          },
+          "421": {
+            "description": "Este fornecedor já existe!"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/excluir/controle-estoque/movimentacao/:id": {
+      "delete": {
+        "summary": "Exclusao de movimentação",
+        "description": "Essa rota será responsável por excluir uma movimentação do controle de estoque",
+        "tags": ["Controle Estoque"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da moviemntação a ser excluída",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK!"
+          },
+          "500": {
+            "description": "Erro ao excluir fornecedor!"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Register": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "example": "31-12-2000"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Categoria": {
+        "type": "object",
+        "properties": {
+          "categoria": {
+            "type": "string"
+          }
+        }
+      },
+      "Fornecedor": {
+        "type": "object",
+        "properties": {
+          "CNPJ": {
+            "type": "string"
+          },
+          "razao_social": {
+            "type": "string"
+          },
+          "nome_fantasia": {
+            "type": "string"
+          },
+          "endereco": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Produto": {
+        "type": "object",
+        "properties": {
+          "produto": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "string"
+          },
+          "custo_unitario": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "unidade_medida": {
+            "type": "string"
+          },
+          "id_categoria": {
+            "type": "string"
+          },
+          "id_fornecedor": {
+            "type": "string"
+          }
+        },
+        "id_estoque": {
+          "type": "string"
+        }
+      },
+      "Estoque": {
+        "type": "object",
+        "properties": {
+          "estoque_atual": {
+            "type": "string"
+          },
+          "estoque_minimo": {
+            "type": "string"
+          },
+          "localizacao": {
+            "type": "string"
+          },
+          "custo_medio": {
+            "type": "string"
+          },
+          "data_entrada": {
+            "type": "date"
+          },
+          "data_ultima_atualizacao": {
+            "type": "date"
+          },
+          "id_produto": {
+            "type": "string"
+          }
+        }
+      },
+      "Controle Estoque": {
+        "type": "object",
+        "properties": {
+          "tipo_transacao": {
+            "type": "string"
+          },
+          "data_hora_transacao": {
+            "type": "date"
+          },
+          "motivo_transacao": {
+            "type": "string"
+          },
+          "id_usuario": {
+            "type": "string"
+          },
+          "id_produto": {
+            "type": "string"
+          }
+        },
+        "id_estoque": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securitySchemes": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  }
+}
