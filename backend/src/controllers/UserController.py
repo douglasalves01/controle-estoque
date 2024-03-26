@@ -37,7 +37,7 @@ class UserController:
             resultVerify=pwd_context.verify(password,hashed_senha)
            
             if not resultVerify:
-                raise HTTPException(status_code=422, detail="Senha inválida!") 
+                raise HTTPException(status_code=421, detail="Senha inválida!") 
                           
             access_token_expires = timedelta(minutes=float(ACCESS_TOKEN_EXPIRE_MINUTES))
             access_token = create_access_token(data={"sub": name}, expires_delta=access_token_expires)

@@ -1,18 +1,18 @@
 import oracledb
 import os
 from dotenv import load_dotenv
-import requests
+# import requests
 from oracledb import DatabaseError
 
-# Desabilitando a verificação SSL para a próxima requisição
-response = requests.get('http://127.0.0.1:8000', verify=False)
+# # Desabilitando a verificação SSL para a próxima requisição
+# response = requests.get('http://127.0.0.1:8000', verify=False)
 
-# Verificar se a requisição foi bem-sucedida
-if response.status_code == 200:
-    print("Requisição bem-sucedida!")
-    print("Conteúdo da resposta:", response.text)
-else:
-    print("Erro na requisição:", response.status_code)
+# # Verificar se a requisição foi bem-sucedida
+# if response.status_code == 200:
+#     print("Requisição bem-sucedida!")
+#     print("Conteúdo da resposta:", response.text)
+# else:
+#     print("Erro na requisição:", response.status_code)
 
 
 load_dotenv()
@@ -22,7 +22,6 @@ DB_STRING=os.getenv('STRING_ORACLE_CONNECTION')
 
 def conn():
     try:
-        print(DB_USER)
         connection = oracledb.connect(
             user=DB_USER,
             password=DB_PASSWORD,
