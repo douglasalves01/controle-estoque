@@ -12,7 +12,6 @@ with cursor as cursor:
                 estoque_atual number(5),
                 estoque_minimo number(5),
                 localizacao varchar2(100),
-                data_entrada date,
                 data_ultima_atualizacao date,
                 id_produto number,                   
                 primary key (id),
