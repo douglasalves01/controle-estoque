@@ -32,7 +32,6 @@ class SimpleAuthBackend:
     
     def verifyAccess(self,request:Request,nivel_description:str):
         #vou receber o nivel do usuario e a descração do nivel
-        print('oi')
         try:
           
             connection = conn()

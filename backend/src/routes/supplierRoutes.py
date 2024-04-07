@@ -11,9 +11,8 @@ SupplierController = SupplierController()
 @routerSupplier.post("/cadastrar/fornecedor")
 async def createSupplier(supplier: SupplierRequest, request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
-        SimpleAuthBackend().verifyAccess(request, nivel_description='admin')
-        checkToken(request)
-        SupplierController.createSupplier(supplier.name, supplier.cnpj, supplier.razao_social, supplier.nome_fantasia, supplier.endereco, supplier.telefone)
+        SimpleAuthBackend().verifyAccess(request, nivel_description='editor')
+        SupplierController.createSupplier(supplier.cnpj, supplier.razao_social, supplier.nome_fantasia, supplier.endereco, supplier.telefone)
         return {"message": "Fornecedor cadastrado com sucesso!"}
     except HTTPException as e:
         raise HTTPException(status_code=422, detail=str(e))
