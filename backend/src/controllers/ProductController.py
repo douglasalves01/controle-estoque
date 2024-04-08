@@ -1,11 +1,12 @@
 from database.conn import conn
 from oracledb import DatabaseError
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from helpers.create_access_token import create_access_token
-from datetime import datetime, timedelta, timezone
+from datetime import datetime,date, timedelta, timezone
+from helpers.get_user_by_token import getUserByToken
 import os
 from dotenv import load_dotenv
 
@@ -15,8 +16,10 @@ class ProductController:
     cursor=connection.cursor()
 
     @staticmethod
-    def createProduct(product,price,status,unit_measure,id_supplier,id_category):
-        try:
+    def createProduct(product,price,status,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,request:Request ):
+        try: 
+            data_atual = date.today()
+           
             #verificar se os campos necessários vieram nulos ou vzios
             if(product is None or product==""):
                 raise HTTPException(status_code=422, detail="Insira o nome do produto!")
@@ -26,17 +29,48 @@ class ProductController:
                 raise HTTPException(status_code=422,detail="Insira o status do produto!")
             if(unit_measure is None or unit_measure==""):
                 raise HTTPException(status_code=422,detail="Insira a unidade de medida do produto!")
-            if(id_supplier is None or id_supplier==""):
-                raise HTTPException(status_code=422,detail="Insira o fornecedor para o produto!")
+            if(minimumStock is None or minimumStock==""):
+                raise HTTPException(status_code=422,detail="Insira o estoque mínimo do produto!")
             if(id_category is None or id_category ==""):
                 raise HTTPException(status_code=422,detail="insira a categoria do produto!")
+            if(id_supplier is None or id_supplier==""):
+                raise HTTPException(status_code=422,detail="Insira o fornecedor para o produto!")
+            if(unitCost is None or unitCost==""):
+                raise HTTPException(status_code=422,detail="Insira o custo unitário produto!")
+            if(location is None or location ==""):
+                raise HTTPException(status_code=422,detail="insira a localização do produto!")
+            if(currentStock is None or currentStock ==""):
+                raise HTTPException(status_code=422,detail="insira a quantidade do produto!")
             
+            #verificar se já existe um produto igual cadastrado
             ProductController.cursor.execute("select * from tblproduto where produto= :1",[product])
             rows=ProductController.cursor.fetchall()
             
             if(rows):
                 raise HTTPException(status_code=422, detail="Produto já existe no banco de dados!")
+            
+            #inserindo produto
             ProductController.cursor.execute("INSERT INTO tblproduto (produto,valor,status,unidade_medida,id_fornecedor,id_categoria) VALUES (:1,:2,:3,:4,:5,:6)", [product,price,status,unit_measure,id_supplier,id_category]) 
+            ProductController.connection.commit()  
+            ##INSERIR ESTOQUE
+            ##buscar id do produto
+            ProductController.cursor.execute("SELECT id FROM tblproduto WHERE produto = :1", [product])
+            id_product = ProductController.cursor.fetchone()
+            ##inserir o estoque
+            ProductController.cursor.execute("INSERT INTO tblestoque (estoque_atual,estoque_minimo,localizacao,data_ultima_atualizacao,id_produto) VALUES (:1,:2,:3,:4,:5)", [currentStock,minimumStock,location,data_atual,id_product[0]]) 
+            ProductController.connection.commit()  
+            print(ProductController.cursor.rowcount, "Rows Inserted")
+
+            ##pegar usuário logado
+            user=getUserByToken(request)
+            ProductController.cursor.execute("select id from tblusuario where nome=:1", [user])
+            id_user=ProductController.cursor.fetchone()[0]
+            print(id_user)
+            print(data_atual)
+            ##INSERIR O CONTROLE DO ESTOQUE
+            tipo="entrada"
+            motivo="entrada de produto no estoque"
+            ProductController.cursor.execute("INSERT INTO tblcontroleestoque (tipo_transacao,data_hora_transacao,motivo_transacao,id_usuario,id_produto) values (:1,:2,:3,:4,:5)",[tipo,data_atual,motivo,id_user,id_product[0]])
             ProductController.connection.commit()  
             print(ProductController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
