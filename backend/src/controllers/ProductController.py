@@ -1,13 +1,8 @@
 from database.conn import conn
 from oracledb import DatabaseError
 from fastapi import HTTPException, Request
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from helpers.create_access_token import create_access_token
-from datetime import datetime,date, timedelta, timezone
+from datetime import datetime
 from helpers.get_user_by_token import getUserByToken
-import os
 from dotenv import load_dotenv
 
 class ProductController:
@@ -18,7 +13,7 @@ class ProductController:
     @staticmethod
     def createProduct(product,price,status,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,request:Request ):
         try: 
-            data_atual = date.today()
+            data_atual = datetime.now()
            
             #verificar se os campos necessários vieram nulos ou vzios
             if(product is None or product==""):
@@ -65,8 +60,6 @@ class ProductController:
             user=getUserByToken(request)
             ProductController.cursor.execute("select id from tblusuario where nome=:1", [user])
             id_user=ProductController.cursor.fetchone()[0]
-            print(id_user)
-            print(data_atual)
             ##INSERIR O CONTROLE DO ESTOQUE
             tipo="entrada"
             motivo="entrada de produto no estoque"

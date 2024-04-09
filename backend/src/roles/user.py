@@ -18,8 +18,6 @@ class SimpleAuthBackend:
     SECRET_KEY = os.getenv('SECRET_KEY')
     ALGORITHM = os.getenv('ALGORITHM')
     async def authenticate(self, request: Request):
-        
-
         try:
             if request.headers.get("Authorization"):
                 token = request.headers.get("Authorization").split(' ')[1]

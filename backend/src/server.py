@@ -3,6 +3,7 @@ from routes.categoryRoutes import routerCategory
 from routes.userRoutes import routerUser
 from routes.supplierRoutes import routerSupplier
 from routes.productRoutes import routerProduct
+from routes.saleRoutes import routerSale
 from database.conn import conn
 from swagger_ui import api_doc
 app = FastAPI()
@@ -12,6 +13,7 @@ app.include_router(routerCategory)
 app.include_router(routerSupplier)
 app.include_router(routerUser)
 app.include_router(routerProduct)
+app.include_router(routerSale)
 
 #documentação da api
 api_doc(app, config_path='./swagger.json', url_prefix='/api/doc', title='API doc')
