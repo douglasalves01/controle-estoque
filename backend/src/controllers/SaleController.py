@@ -37,6 +37,17 @@ class SaleController:
                 SaleController.cursor.execute("INSERT INTO TBLVENDAITEM (QUANTIDADE,ID_PRODUTO,ID_VENDA) VALUES (:1,:2,:3)",[quantidade_produto,produto,id_venda]) 
                 SaleController.connection.commit()  
                 print(SaleController.cursor.rowcount, "Rows Inserted") 
+            
+            ##salvar as movimentações no controle de estoque como saída
+            tipo_transacao="saida"
+            motivo_transacao="venda"
+            
+            for i in range(len(id_produto)):
+                produto=id_produto[i]
+                quantidade_produto=quantidade[i]
+                SaleController.cursor.execute("INSERT INTO TBLCONTROLEESTOQUE (TIPO_TRANSACAO,DATA_HORA_TRANSACAO,MOTIVO_TRANSACAO,ID_USUARIO,ID_PRODUTO,QUANTIDADE,CUSTO_UNITARIO) VALUES (:1,:2,:3,:4,:5,:6,:7)",[tipo_transacao,data_atual,motivo_transacao,id_user,produto,quantidade_produto,0]) 
+                SaleController.connection.commit()  
+                print(SaleController.cursor.rowcount, "Rows Inserted") 
                  
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao realizar venda! Tente novamente mais tarde!: " + str(e))
