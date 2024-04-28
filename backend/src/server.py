@@ -16,6 +16,5 @@ app.include_router(routerUser)
 app.include_router(routerProduct)
 app.include_router(routerSale)
 app.include_router(routerStock)
-
 #documentação da api
 api_doc(app, config_path='./swagger.json', url_prefix='/api/doc', title='API doc')

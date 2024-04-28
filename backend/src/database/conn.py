@@ -7,7 +7,6 @@ load_dotenv()
 DB_USER=os.getenv('USER_ORACLE_CONNECTION')
 DB_PASSWORD=os.getenv('PASSWORD_ORACLE_CONNECTION')
 DB_STRING=os.getenv('STRING_ORACLE_CONNECTION')
-
 def conn():
     try:
         connection = oracledb.connect(
