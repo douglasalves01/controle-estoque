@@ -39,7 +39,7 @@ async def updateCategory(id_category,category:CategoryRequest,request:Request,to
 @routerCategory.delete("/excluir/categoria/{id_category}")
 async def deleteCategory(id_category,request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
     try:
-        SimpleAuthBackend.verifyAccess(request,nivel_description="editor")
+        SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
         CategoryController.deleteCategory(id_category)
         return {"message":"Categoria excluída com sucesso!"}
     except Exception as e:
