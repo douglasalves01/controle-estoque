@@ -16,7 +16,7 @@ class StockController:
     cursor=connection.cursor()
     
     @staticmethod
-    async def Entrada(quantidade:int,id_product:int,motivo_transacao:str,custo_unitario:float,typeMoviment:str,request:Request):
+    async def Movimentacao(quantidade:int,id_product:int,motivo_transacao:str,custo_unitario:float,typeMoviment:str,request:Request):
         try:
             data_atual=datetime.now()
             ##pegar usuário logado

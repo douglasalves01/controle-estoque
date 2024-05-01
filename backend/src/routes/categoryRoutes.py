@@ -19,9 +19,9 @@ async def createCategory(category:CategoryRequest, request:Request, token:str=De
         raise HTTPException(status_code=422,detail=str(e))
 
 @routerCategory.get("/categorias")
-async def getAllCategory(request:Request):
+async def getAllCategory(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
     try:
-        checkToken(request)
+        SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
         rows = CategoryController.getAllCategory()
         return JSONResponse(content=rows)
     except Exception as e:

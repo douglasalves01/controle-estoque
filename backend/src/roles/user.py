@@ -30,14 +30,11 @@ class SimpleAuthBackend:
     
     def verifyAccess(self,request:Request,nivel_description:str):
         #vou receber o nivel do usuario e a descração do nivel
-        try:
-          
+        try:     
             connection = conn()
             cursor = connection.cursor()
             token = request.headers.get("Authorization").split(' ')[1]
-            print(token)
             user = jwt.decode(token, SimpleAuthBackend.SECRET_KEY, algorithms=[SimpleAuthBackend.ALGORITHM])['sub']
-            print(user)
             cursor.execute("select n.nome from tblnivelacesso n,tblusuario u where u.nome = :1 and n.id = u.id_nivelacesso",[user] )
             result = cursor.fetchone()[0]
             if(nivel_description=='admin'):

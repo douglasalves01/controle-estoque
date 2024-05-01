@@ -10,7 +10,7 @@ StockController=StockController()
 async def sale(stock:StockRequest,request:Request, token:str=Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request,nivel_description="estoque")
-        await StockController.Entrada(stock.addStock,stock.id_product,stock.description,stock.unitCost,stock.typeMoviment,request)
+        await StockController.Movimentacao(stock.addStock,stock.id_product,stock.description,stock.unitCost,stock.typeMoviment,request)
         return {"message":"Entrada no estoque registrada com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=422,detail=str(e))
