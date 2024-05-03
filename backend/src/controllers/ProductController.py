@@ -92,5 +92,19 @@ class ProductController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao editar produto no banco de dados: " + str(e))
     
-    ##FAZER A PARTE DE EXCLUISÃO E DE RETORNAR TODOS OS PRODUTOS
-    ##PEGAR DE BASE A CATEGORIA
+    @staticmethod
+    def getAllProducts():
+        try:
+            ProductController.cursor.execute("select * from tblproduto")
+            rows = ProductController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar produtos do banco de dados: " + str(e))
+        
+    @staticmethod
+    def deleteProduct(id_product):
+        try:
+            ProductController.cursor.execute("DELETE from tblproduto where id = :1",[id_product])
+            ProductController.connection.commit()
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao excluir produto do banco de dados: " + str(e))

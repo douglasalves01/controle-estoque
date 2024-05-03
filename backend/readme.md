@@ -16,6 +16,6 @@
 
 ## python -m pip install oracledb
 
-## primeiro tem que buidar o container
+## primeiro tem que buidar o container -> docker build -t nome_da_imagem .
 
 ## rodar o projeto como container -> docker run -p 8000:8000 nome_da_imagem

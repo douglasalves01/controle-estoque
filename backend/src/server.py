@@ -8,8 +8,21 @@ from routes.stockRoutes import routerStock
 from routes.reportsRoutes import routerReports
 from database.conn import conn
 from swagger_ui import api_doc
-app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+origins = [
+    "http://localhost/",
+    "http://localhost:5173/",  # Adicione todas as origens permitidas aqui
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Adicione OPTIONS aqui
+    allow_headers=["Content-Type", "Authorization"],
+)
 connection=conn
 app.include_router(routerCategory)
 app.include_router(routerSupplier)
