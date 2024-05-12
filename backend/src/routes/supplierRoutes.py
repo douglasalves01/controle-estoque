@@ -12,7 +12,7 @@ SupplierController = SupplierController()
 async def createSupplier(supplier: SupplierRequest, request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request, nivel_description='editor')
-        SupplierController.createSupplier(supplier.cnpj, supplier.razao_social, supplier.nome_fantasia, supplier.endereco, supplier.telefone)
+        SupplierController.createSupplier(supplier.cnpj, supplier.razao_social, supplier.nome_fantasia, supplier.endereco, supplier.telefone,supplier.status)
         return {"message": "Fornecedor cadastrado com sucesso!"}
     except HTTPException as e:
         raise HTTPException(status_code=422, detail=str(e))
@@ -21,8 +21,16 @@ async def createSupplier(supplier: SupplierRequest, request: Request, token: str
 async def getAllSuppliers(request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request, nivel_description='editor')
-        checkToken(request)
         rows = SupplierController.getAllSuppliers()
+        return JSONResponse(content=rows)
+    except HTTPException as e:
+        raise HTTPException(status_code=422, detail=str(e))
+      
+@routerSupplier.get("/fornecedores-active")
+async def getAllSuppliers(request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request, nivel_description='editor')
+        rows = SupplierController.getAllSuppliersActive()
         return JSONResponse(content=rows)
     except HTTPException as e:
         raise HTTPException(status_code=422, detail=str(e))
@@ -31,7 +39,6 @@ async def getAllSuppliers(request: Request, token: str = Depends(SimpleAuthBacke
 async def updateSupplier(supplier_id: int, supplier: SupplierRequest, request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request, nivel_description='admin')
-        checkToken(request)
         SupplierController.updateSupplier(supplier.name, supplier_id)
         return {"message":"Fornecedor editado com sucesso!"}
     except HTTPException as e:
@@ -41,7 +48,6 @@ async def updateSupplier(supplier_id: int, supplier: SupplierRequest, request: R
 async def deleteSupplier(supplier_id: int, request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request, nivel_description='admin')
-        checkToken(request)
         SupplierController.deleteSupplier(supplier_id)
         return {"message":"Fornecedor excluído com sucesso!"}
     except HTTPException as e:

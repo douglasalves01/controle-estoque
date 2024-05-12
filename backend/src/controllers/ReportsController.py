@@ -51,3 +51,7 @@ class ReportsController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar movimentações do banco de dados: " + str(e))
     
+    ##trazer relatório de lucro por mês
+    ##produtos mais vendidos
+    ##categorias mais vendidas
+    

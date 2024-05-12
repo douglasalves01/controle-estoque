@@ -11,8 +11,7 @@ COPY ./backend/.env /app
 COPY ./backend/src /app
 
 # Instalar as dependências
-RUN pip install fastapi uvicorn[standard] python-jose[cryptography] passlib[bcrypt] swagger-ui-py && \
-    python -m pip install oracledb
+RUN pip install fastapi uvicorn[standard] python-jose[cryptography] passlib[bcrypt] swagger-ui-py && python -m pip install oracledb
 
 # Definir variáveis de ambiente a partir do arquivo .env
 ENV $(cat /app/.env | grep -v ^# | xargs)

@@ -7,3 +7,4 @@ class SupplierRequest(BaseModel):
     nome_fantasia:str
     endereco:str
     telefone: List[str]
+    status: str = "ativo"

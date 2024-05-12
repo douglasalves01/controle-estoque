@@ -7,7 +7,7 @@ class SupplierController:
     cursor = connection.cursor()
 
     @staticmethod
-    def createSupplier(cnpj, razao_social, nome_fantasia, endereco, telefone):
+    def createSupplier(cnpj, razao_social, nome_fantasia, endereco, telefone,status):
         try:
             if(cnpj is None or cnpj==""):
                 raise HTTPException(status_code=422, detail="Insira o CNPJ!")
@@ -27,7 +27,7 @@ class SupplierController:
                 raise HTTPException(status_code=422, detail="Este nome de fornecedor já está cadastrado!")
 
             ##salvar os telefones na tabela telefone com o id do fornecedor cadastrado(usar for)
-            SupplierController.cursor.execute("INSERT INTO tblfornecedor (cnpj, razao_social, nome_fantasia, endereco) VALUES (:1, :2, :3, :4)", [cnpj,razao_social,nome_fantasia,endereco]) 
+            SupplierController.cursor.execute("INSERT INTO tblfornecedor (cnpj, razao_social, nome_fantasia, endereco,status) VALUES (:1, :2, :3, :4,:5)", [cnpj,razao_social,nome_fantasia,endereco,status]) 
             SupplierController.connection.commit()  
             SupplierController.cursor.execute("SELECT id FROM tblfornecedor WHERE cnpj = :1", [cnpj])
             id = SupplierController.cursor.fetchone()
@@ -47,7 +47,16 @@ class SupplierController:
             raise HTTPException(status_code=500, detail="Erro ao retornar fornecedores do banco de dados: " + str(e))
         
     @staticmethod
-    def updateSupplier(id,cnpj, razao_social, nome_fantasia, endereco, telefone):
+    def getAllSuppliersActive():
+        try:
+            SupplierController.cursor.execute("SELECT * FROM tblfornecedor where status='ativo'")
+            rows = SupplierController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar fornecedores do banco de dados: " + str(e))
+        
+    @staticmethod
+    def updateSupplier(id,cnpj, razao_social, nome_fantasia, endereco, telefone,status):
         try:
             if(cnpj is None or cnpj==""):
                 raise HTTPException(status_code=422, detail="Insira o CNPJ!")
@@ -60,6 +69,9 @@ class SupplierController:
             if(telefone is None or telefone==""):
                 raise HTTPException(status_code=422, detail="Insira o telefone do fornecedor!")
    
+            if(status is None or status==""):
+                raise HTTPException(status_code=422, detail="Insira o status do fornecedor!")
+   
             SupplierController.cursor.execute("UPDATE tblfornecedor SET nome = :1, cnpj = :2, razao_social = :3, nome_fantasia = :4, endereco = :5, telefone = :6 WHERE id = :7", 
                                               [ cnpj, razao_social, nome_fantasia, endereco, telefone, id])
             SupplierController.connection.commit()
@@ -69,8 +81,9 @@ class SupplierController:
         
     @staticmethod
     def deleteSupplier(id):
+        status="inativo"
         try:
-            SupplierController.cursor.execute("DELETE FROM tblfornecedor WHERE id = :1", [id])
+            SupplierController.cursor.execute("UPDATE tblfornecedor SET status= :1 where id=:2", [status,id])
             SupplierController.connection.commit()
             
         except DatabaseError as e:

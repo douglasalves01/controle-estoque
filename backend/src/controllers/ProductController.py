@@ -102,9 +102,19 @@ class ProductController:
             raise HTTPException(status_code=500, detail="Erro ao retornar produtos do banco de dados: " + str(e))
         
     @staticmethod
+    def getAllProductsActive():
+        try:
+            ProductController.cursor.execute("select * from tblproduto where status='ativo'")
+            rows = ProductController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar produtos do banco de dados: " + str(e))
+        
+    @staticmethod
     def deleteProduct(id_product):
         try:
-            ProductController.cursor.execute("DELETE from tblproduto where id = :1",[id_product])
+            status='inativo'
+            ProductController.cursor.execute("UPDATE tblproduto SET status=:1 where id = :2",[status,id_product])
             ProductController.connection.commit()
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao excluir produto do banco de dados: " + str(e))

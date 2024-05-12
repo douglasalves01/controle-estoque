@@ -40,6 +40,15 @@ async def getAllProducts(request:Request,token:str=Depends(SimpleAuthBackend().a
     except Exception as e:
         raise HTTPException(status_code=422,detail=str(e))
     
+@routerProduct.get("/produto-active")
+async def getAllProducts(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
+        rows = ProductController.getAllProducts()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+    
     
 @routerProduct.delete("/excluir/produto/{id_product}")
 async def deleteProduct(id_product,request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
