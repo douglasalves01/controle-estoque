@@ -39,7 +39,7 @@ async def getAllSuppliers(request: Request, token: str = Depends(SimpleAuthBacke
 async def updateSupplier(supplier_id: int, supplier: SupplierRequest, request: Request, token: str = Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request, nivel_description='admin')
-        SupplierController.updateSupplier(supplier.name, supplier_id)
+        SupplierController.updateSupplier(supplier_id,supplier.cnpj,supplier.razao_social,supplier.nome_fantasia,supplier.endereco,supplier.telefone,supplier.status)
         return {"message":"Fornecedor editado com sucesso!"}
     except HTTPException as e:
         raise HTTPException(status_code=422, detail=str(e))

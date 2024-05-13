@@ -57,6 +57,13 @@ class SupplierController:
         
     @staticmethod
     def updateSupplier(id,cnpj, razao_social, nome_fantasia, endereco, telefone,status):
+        print(id)
+        print(cnpj)
+        print(razao_social)
+        print(nome_fantasia)
+        print(endereco)
+        print(telefone)
+        print(status)
         try:
             if(cnpj is None or cnpj==""):
                 raise HTTPException(status_code=422, detail="Insira o CNPJ!")
@@ -72,8 +79,8 @@ class SupplierController:
             if(status is None or status==""):
                 raise HTTPException(status_code=422, detail="Insira o status do fornecedor!")
    
-            SupplierController.cursor.execute("UPDATE tblfornecedor SET nome = :1, cnpj = :2, razao_social = :3, nome_fantasia = :4, endereco = :5, telefone = :6 WHERE id = :7", 
-                                              [ cnpj, razao_social, nome_fantasia, endereco, telefone, id])
+            SupplierController.cursor.execute("UPDATE tblfornecedor SET cnpj = :1, razao_social = :2, nome_fantasia = :3, endereco = :4 WHERE id = :5", 
+                                              [ cnpj, razao_social, nome_fantasia, endereco, id])
             SupplierController.connection.commit()
             
         except DatabaseError as e:
