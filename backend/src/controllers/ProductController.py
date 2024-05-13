@@ -11,10 +11,13 @@ class ProductController:
     cursor=connection.cursor()
 
     @staticmethod
-    def createProduct(product,price,status,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,request:Request ):
+    def createProduct(product,price,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,request:Request ):
         try: 
             data_atual = datetime.now()
-           
+            status='ativo'
+            print(currentStock)
+            print(minimumStock)
+            print(unitCost)
             #verificar se os campos necessários vieram nulos ou vzios
             if(product is None or product==""):
                 raise HTTPException(status_code=422, detail="Insira o nome do produto!")
@@ -52,7 +55,7 @@ class ProductController:
             ProductController.cursor.execute("SELECT id FROM tblproduto WHERE produto = :1", [product])
             id_product = ProductController.cursor.fetchone()
             ##inserir o estoque
-            ProductController.cursor.execute("INSERT INTO tblestoque (estoque_atual,estoque_minimo,localizacao,data_ultima_atualizacao,id_produto) VALUES (:1,:2,:3,:4,:5)", [currentStock,minimumStock,location,data_atual,id_product[0]]) 
+            ProductController.cursor.execute("INSERT INTO tblestoque (estoque_atual,estoque_minimo,localizacao,custo_unitario,data_ultima_atualizacao,id_produto) VALUES (:1,:2,:3,:4,:5,:6)", [0,minimumStock,location,unitCost,data_atual,id_product[0]]) 
             ProductController.connection.commit()  
             print(ProductController.cursor.rowcount, "Rows Inserted")
 
@@ -63,7 +66,7 @@ class ProductController:
             ##INSERIR O CONTROLE DO ESTOQUE
             tipo="entrada"
             motivo="entrada de produto no estoque"
-            ProductController.cursor.execute("INSERT INTO tblcontroleestoque (tipo_transacao,data_hora_transacao,motivo_transacao,id_usuario,id_produto) values (:1,:2,:3,:4,:5)",[tipo,data_atual,motivo,id_user,id_product[0]])
+            ProductController.cursor.execute("INSERT INTO tblcontroleestoque (tipo_transacao,data_hora_transacao,motivo_transacao,id_usuario,id_produto,quantidade,custo_unitario) values (:1,:2,:3,:4,:5,:6,:7)",[tipo,data_atual,motivo,id_user,id_product[0],currentStock,unitCost])
             ProductController.connection.commit()  
             print(ProductController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
