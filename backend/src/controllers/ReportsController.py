@@ -36,7 +36,7 @@ class ReportsController:
     @staticmethod
     def getAllStocks():
         try:
-            ReportsController.cursor.execute("SELECT p.PRODUTO,e.ESTOQUE_ATUAL, e.ESTOQUE_MINIMO, e.LOCALIZACAO, e.CUSTO_UNITARIO, TO_CHAR(e.DATA_ULTIMA_ATUALIZACAO, 'YYYY-MM-DD HH24:MI:SS') FROM tblestoque e,tblproduto p where p.id=e.id_produto")
+            ReportsController.cursor.execute("SELECT e.ID,e.ESTOQUE_ATUAL, e.ESTOQUE_MINIMO, e.LOCALIZACAO, TO_CHAR(e.DATA_ULTIMA_ATUALIZACAO, 'YYYY-MM-DD HH24:MI:SS'),p.PRODUTO, e.CUSTO_UNITARIO FROM tblestoque e,tblproduto p where p.id=e.id_produto")
             rows = ReportsController.cursor.fetchall()
             return rows
         except DatabaseError as e:
@@ -45,7 +45,7 @@ class ReportsController:
     @staticmethod
     def getAllMovements():
         try:
-            ReportsController.cursor.execute("SELECT p.PRODUTO,c.tipo_transacao, TO_CHAR(c.data_hora_transacao, 'YYYY-MM-DD HH24:MI:SS'), c.motivo_transacao, c.quantidade,c.custo_unitario, u.nome FROM tblcontroleestoque c,tblproduto p, tblusuario u where p.id=c.id_produto and u.id=c.id_usuario")
+            ReportsController.cursor.execute("SELECT c.ID,c.tipo_transacao, TO_CHAR(c.data_hora_transacao, 'YYYY-MM-DD HH24:MI:SS'),c.quantidade,c.custo_unitario,c.motivo_transacao,p.PRODUTO,u.nome,p.ID  FROM tblcontroleestoque c,tblproduto p, tblusuario u where p.id=c.id_produto and u.id=c.id_usuario")
             rows = ReportsController.cursor.fetchall()
             return rows
         except DatabaseError as e:

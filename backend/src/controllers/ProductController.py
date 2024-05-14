@@ -98,7 +98,7 @@ class ProductController:
     @staticmethod
     def getAllProducts():
         try:
-            ProductController.cursor.execute("select * from tblproduto")
+            ProductController.cursor.execute("select p.id,p.produto,p.valor,p.status,p.unidade_medida,f.nome_fantasia,c.categoria from tblproduto p,tblcategoria c,tblfornecedor f where p.id_categoria=c.id and p.id_fornecedor=f.id")
             rows = ProductController.cursor.fetchall()
             return rows
         except DatabaseError as e:
