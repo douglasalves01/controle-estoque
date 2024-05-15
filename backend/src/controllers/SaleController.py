@@ -11,19 +11,26 @@ class SaleController:
     async def Sale(id_produto,quantidade,request:Request):
         try:
             data_atual = datetime.now()
+            valor=0
             if(id_produto is None or id_produto==""):
                 raise HTTPException(status_code=422,detail="Insira o produto no carrinho!")
             if(quantidade is None or quantidade==""):
                 raise HTTPException(status_code=422,detail="Insira a quantidade do produto!")
-            
             ##pegar usuário logado
             user=getUserByToken(request)
             SaleController.cursor.execute("select id from tblusuario where nome=:1", [user])
             id_user=SaleController.cursor.fetchone()[0]
             ##verificar regra de negócio com a quantidade de estoque
             await saleRoles.checkMinimumStock(id_produto,quantidade)
-            ##chamar a regra de negócio para verificar quantidade
-            SaleController.cursor.execute("INSERT INTO TBLVENDA (DATA,ID_USUARIO) VALUES (:1,:2)",[data_atual,id_user])
+            
+            for i in range(len(id_produto)):
+                produto=id_produto[i]
+                quantidade_produto=quantidade[i]
+                SaleController.cursor.execute("select valor from tblproduto where id=:1", [produto])
+                valor_unit=SaleController.cursor.fetchone()[0]
+                valor+=(float(quantidade_produto)*float(valor_unit))
+
+            SaleController.cursor.execute("INSERT INTO TBLVENDA (DATA,ID_USUARIO,VALOR) VALUES (:1,:2,:3)",[data_atual,id_user,valor])
             SaleController.connection.commit()  
             print(SaleController.cursor.rowcount, "Rows Inserted")
             ##pegando id da ultima venda
@@ -45,7 +52,9 @@ class SaleController:
             for i in range(len(id_produto)):
                 produto=id_produto[i]
                 quantidade_produto=quantidade[i]
-                SaleController.cursor.execute("INSERT INTO TBLCONTROLEESTOQUE (TIPO_TRANSACAO,DATA_HORA_TRANSACAO,MOTIVO_TRANSACAO,ID_USUARIO,ID_PRODUTO,QUANTIDADE,CUSTO_UNITARIO) VALUES (:1,:2,:3,:4,:5,:6,:7)",[tipo_transacao,data_atual,motivo_transacao,id_user,produto,quantidade_produto,0]) 
+                SaleController.cursor.execute("select e.custo_unitario from tblestoque e where e.id_produto=:1", [produto])
+                custo_unitario=SaleController.cursor.fetchone()[0]
+                SaleController.cursor.execute("INSERT INTO TBLCONTROLEESTOQUE (TIPO_TRANSACAO,DATA_HORA_TRANSACAO,MOTIVO_TRANSACAO,ID_USUARIO,ID_PRODUTO,QUANTIDADE,CUSTO_UNITARIO) VALUES (:1,:2,:3,:4,:5,:6,:7)",[tipo_transacao,data_atual,motivo_transacao,id_user,produto,quantidade_produto,custo_unitario]) 
                 SaleController.connection.commit()  
                 print(SaleController.cursor.rowcount, "Rows Inserted") 
                  

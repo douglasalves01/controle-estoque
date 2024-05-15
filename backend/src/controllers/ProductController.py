@@ -11,7 +11,7 @@ class ProductController:
     cursor=connection.cursor()
 
     @staticmethod
-    def createProduct(product,price,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,request:Request ):
+    def createProduct(product,price,unit_measure,id_supplier,id_category,currentStock,minimumStock,unitCost,location,description,icms,request:Request ):
         try: 
             data_atual = datetime.now()
             status='ativo'
@@ -25,6 +25,10 @@ class ProductController:
                 raise HTTPException(status_code=422,detail="Insira o valor do produto!")
             if(status is None or status==""):
                 raise HTTPException(status_code=422,detail="Insira o status do produto!")
+            if(description is None or description==""):
+                raise HTTPException(status_code=422,detail="Insira a descrição do produto!")
+            if(icms is None or icms==""):
+                raise HTTPException(status_code=422,detail="Insira o ICMS do produto!")
             if(unit_measure is None or unit_measure==""):
                 raise HTTPException(status_code=422,detail="Insira a unidade de medida do produto!")
             if(minimumStock is None or minimumStock==""):
@@ -48,7 +52,7 @@ class ProductController:
                 raise HTTPException(status_code=422, detail="Produto já existe no banco de dados!")
             
             #inserindo produto
-            ProductController.cursor.execute("INSERT INTO tblproduto (produto,valor,status,unidade_medida,id_fornecedor,id_categoria) VALUES (:1,:2,:3,:4,:5,:6)", [product,price,status,unit_measure,id_supplier,id_category]) 
+            ProductController.cursor.execute("INSERT INTO tblproduto (produto,valor,status,unidade_medida,id_fornecedor,id_categoria,descricao,icms) VALUES (:1,:2,:3,:4,:5,:6,:7,:8)", [product,price,status,unit_measure,id_supplier,id_category,description,icms]) 
             ProductController.connection.commit()  
             ##INSERIR ESTOQUE
             ##buscar id do produto
@@ -98,7 +102,7 @@ class ProductController:
     @staticmethod
     def getAllProducts():
         try:
-            ProductController.cursor.execute("select p.id,p.produto,p.valor,p.status,p.unidade_medida,f.nome_fantasia,c.categoria from tblproduto p,tblcategoria c,tblfornecedor f where p.id_categoria=c.id and p.id_fornecedor=f.id")
+            ProductController.cursor.execute("select p.id,p.produto,p.valor,p.status,p.unidade_medida,f.nome_fantasia,c.categoria,p.descricao,p.icms from tblproduto p,tblcategoria c,tblfornecedor f where p.id_categoria=c.id and p.id_fornecedor=f.id")
             rows = ProductController.cursor.fetchall()
             return rows
         except DatabaseError as e:

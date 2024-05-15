@@ -53,6 +53,63 @@ async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().au
     try:
         SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
         rows = ReportsController.getAllMovements()
+        return JSONResponse(content=rows)   
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+    
+@routerReports.get("/relatorio/sales")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getAllSales()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/financeiro/sales")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getAllProfitSales()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/quantidade/sales")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getQtdeSales()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/quantidade/categories")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getQtdeCategories()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/quantidade/suppliers")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getQtdeSuppliers()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/quantidade/products")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getQtdeProducts()
+        return JSONResponse(content=rows)
+    except Exception as e:
+        raise HTTPException(status_code=422,detail=str(e))
+@routerReports.get("/notificacao/products")
+async def reportProduct(request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    try:
+        SimpleAuthBackend().verifyAccess(request,nivel_description="supervisor")
+        rows = ReportsController.getProductStockMinimum()
         return JSONResponse(content=rows)
     except Exception as e:
         raise HTTPException(status_code=422,detail=str(e))

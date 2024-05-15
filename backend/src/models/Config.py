@@ -4,4 +4,3 @@ class ConfigRequest(BaseModel):
     margem_lucro: str
     comissao_venda: str
     custo_fixo:str
-    imposto_venda:str

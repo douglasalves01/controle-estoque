@@ -19,7 +19,7 @@ async def getAllConfig(request:Request):
 async def updateConfig(id,config:ConfigRequest,request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
     try:
         SimpleAuthBackend().verifyAccess(request,nivel_description="admin")
-        ConfigController.configSave(config.margem_lucro,config.comissao_venda,config.custo_fixo,config.imposto_venda,id)
+        ConfigController.configSave(config.margem_lucro,config.comissao_venda,config.custo_fixo,id)
         return {"message":"Configurações salvas com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=422,detail=str(e))

@@ -51,7 +51,60 @@ class ReportsController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar movimentações do banco de dados: " + str(e))
     
-    ##trazer relatório de lucro por mês
-    ##produtos mais vendidos
-    ##categorias mais vendidas
-    
+    @staticmethod
+    def getAllSales():
+        try:
+            ReportsController.cursor.execute("select vi.id,vi.quantidade,p.valor,(vi.quantidade * p.valor) AS total,TO_CHAR(v.data,'YYYY-MM-DD HH24:MI:SS'),vi.id_venda,u.nome from tblvenda v, tblusuario u,tblvendaitem vi, tblproduto p where v.id_usuario=u.id and vi.id_venda=v.id and p.id=vi.id_produto")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar movimentações do banco de dados: " + str(e))
+    @staticmethod
+    def getAllProfitSales():
+        try:
+            ReportsController.cursor.execute("SELECT v.id,v.valor,TO_CHAR(v.data,'YYYY-MM-DD HH24:MI:SS'),SUM(p.icms),((v.valor * (c.comissao_venda))/100) + ((v.valor * c.custo_fixo)/100) +  ((((((SUM(p.icms) / v.valor) * 100) * v.valor) / 100)*v.valor)/100),v.valor - (((v.valor * (c.comissao_venda))/100) + ((v.valor * c.custo_fixo)/100) +  ((((((SUM(p.icms) / v.valor) * 100) * v.valor) / 100)*v.valor)/100)),c.margem_lucro,c.comissao_venda,c.custo_fixo FROM tblproduto p,tblvenda v,tblvendaitem vi,tblconfig c WHERE vi.id_produto = p.id AND v.id = vi.id_venda AND c.id = 1 GROUP BY v.id,v.valor,v.data,c.margem_lucro,c.comissao_venda,c.custo_fixo")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar movimentações do banco de dados: " + str(e))
+    @staticmethod
+    def getQtdeSales():
+        try:
+            ReportsController.cursor.execute("select count(id) from tblvenda")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar quantidade de vendas do banco de dados: " + str(e))
+    @staticmethod
+    def getQtdeSuppliers():
+        try:
+            ReportsController.cursor.execute("select count(id) from tblfornecedor")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar quantidade de fornecedores do banco de dados: " + str(e))
+    @staticmethod
+    def getQtdeCategories():
+        try:
+            ReportsController.cursor.execute("select count(id) from tblcategoria")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar quantidade de categorias do banco de dados: " + str(e))
+    @staticmethod
+    def getQtdeProducts():
+        try:
+            ReportsController.cursor.execute("select count(id) from tblproduto")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar quantidade de produtos do banco de dados: " + str(e))
+    @staticmethod
+    def getProductStockMinimum():
+        try:
+            ReportsController.cursor.execute("select p.id,p.produto,p.DESCRICAO from tblproduto p,tblestoque e where e.id_produto=p.id and (e.ESTOQUE_ATUAL<=e.ESTOQUE_MINIMO)")
+            rows = ReportsController.cursor.fetchall()
+            return rows
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail="Erro ao retornar quantidade de produtos com estoque minimos do banco de dados: " + str(e))
+

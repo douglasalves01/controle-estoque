@@ -14,7 +14,7 @@ async def createProduct(product:ProductRequest,request:Request,token:str=Depends
     try:
         #chamar a function do controller para cadastrar um novo produto
         SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
-        ProductController.createProduct(product.product,product.price,product.unit_measure,product.id_supplier,product.id_category,product.currentStock,product.minimumStock,product.unitCost,product.location, request)
+        ProductController.createProduct(product.product,product.price,product.unit_measure,product.id_supplier,product.id_category,product.currentStock,product.minimumStock,product.unitCost,product.location,product.description,product.icms, request)
         return {"message":"Produto registrado com sucesso!"}
 
     except Exception as e:

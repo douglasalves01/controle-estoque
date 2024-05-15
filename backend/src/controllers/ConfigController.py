@@ -7,12 +7,7 @@ class ConfigController:
     cursor = connection.cursor()
 
     @staticmethod
-    def configSave(margem_lucro,comissao_venda,custo_fixo, imposto,id):
-        print(margem_lucro)
-        print(comissao_venda)
-        print(custo_fixo)
-        print(imposto)
-        print(id)
+    def configSave(margem_lucro,comissao_venda,custo_fixo,id):
         try:
             
             if(margem_lucro is None or margem_lucro==""):
@@ -21,9 +16,8 @@ class ConfigController:
                 raise HTTPException(status_code=422, detail="Insira a comissão de venda!")
             if(custo_fixo is None or custo_fixo==""):
                 raise HTTPException(status_code=422, detail="Insira o custo fixo!")
-            if(imposto is None or imposto==""):
-                raise HTTPException(status_code=422, detail="Insira o imposto!")
-            ConfigController.cursor.execute("UPDATE TBLCONFIG SET MARGEM_LUCRO=:1, COMISSAO_VENDA=:2,CUSTO_FIXO=:3,IMPOSTO_VENDA=:4 WHERE ID=:5", [margem_lucro,comissao_venda,custo_fixo,imposto,id])
+         
+            ConfigController.cursor.execute("UPDATE TBLCONFIG SET MARGEM_LUCRO=:1, COMISSAO_VENDA=:2,CUSTO_FIXO=:3 WHERE ID=:4", [margem_lucro,comissao_venda,custo_fixo,id])
             ConfigController.connection.commit()  
             print(ConfigController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
