@@ -71,10 +71,3 @@ def desc_decripto(string):
                 espaco = espaco + alfanumerico_invertido[col]
     return espaco
 
-descricao = input("DE UMA BREVE DESCRIÇÃO DO PRODUTO: ").upper()
-descCripto = desc_cripto(descricao)
-descDecripto = desc_decripto(descCripto)
-
-print(descricao)
-print(descCripto)
-print(descDecripto)

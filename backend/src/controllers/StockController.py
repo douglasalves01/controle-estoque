@@ -18,16 +18,16 @@ class StockController:
     @staticmethod
     async def Movimentacao(quantidade:int,id_product:int,motivo_transacao:str,custo_unitario:float,typeMoviment:str,request:Request):
         try:
-          
             data_atual=datetime.now()
             ##pegar usuário logado
             user=getUserByToken(request)
             StockController.cursor.execute("select id from tblusuario where nome=:1", [user])
             id_user=StockController.cursor.fetchone()[0]
+            
             ##inserindo movimentação no banco
             StockController.cursor.execute("INSERT INTO TBLCONTROLEESTOQUE (TIPO_TRANSACAO,DATA_HORA_TRANSACAO,MOTIVO_TRANSACAO,ID_USUARIO,ID_PRODUTO,QUANTIDADE,CUSTO_UNITARIO) VALUES (:1,:2,:3,:4,:5,:6,:7)",[typeMoviment,data_atual,motivo_transacao,id_user,id_product,quantidade,custo_unitario])
             StockController.connection.commit()  
             print(StockController.cursor.rowcount, "Rows Inserted")
         except DatabaseError as e:
-            raise HTTPException(status_code=500, detail="Erro ao realizar venda! Tente novamente mais tarde!: " + str(e))
+            raise HTTPException(status_code=500, detail="Erro ao realizar movimento! Tente novamente mais tarde!: " + str(e))
     

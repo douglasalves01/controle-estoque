@@ -105,7 +105,7 @@ class ProductController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao editar produto no banco de dados: " + str(e))
     
-    descricao_decripto = desc_decripto(desc_cripto)
+    #descricao_decripto = desc_decripto(desc_cripto)
     
     @staticmethod
     def getAllProducts():
