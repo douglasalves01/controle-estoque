@@ -1,7 +1,5 @@
 import numpy as np
 
-descricao = "Teste criptografia"
-
 def desc_cripto(descricao):
     alfanumerico = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11,
                     'M': 12,
@@ -20,8 +18,9 @@ def desc_cripto(descricao):
                            [7, 4]])
     v = []
 
-    if (len(descricao) % 2 != 0):
-        descricao = descricao + ' '
+    # Ensure length is even
+    if len(descricao) % 2 != 0:
+        descricao += ' '
 
     for i in descricao:
         if i in alfanumerico:
@@ -34,7 +33,7 @@ def desc_cripto(descricao):
     for lin in resultado:
         for col in lin:
             if col in alfanumerico_invertido:
-                string = string + alfanumerico_invertido[col]
+                string += alfanumerico_invertido[col]
     return string
 
 def desc_decripto(string):
@@ -51,23 +50,28 @@ def desc_decripto(string):
                               34: '8',
                               35: '9', 36: '0'}
 
-    matriz_decod = np.array([[4, 36],
-                             [30, 2]])
+    matriz_cod = np.array([[4, 36],
+                           [30, 2]])
     v = []
 
     for i in string:
         if i in alfanumerico:
             v.append(alfanumerico[i])
 
-    if len(v) % 2 != 0:
-        v.append(alfanumerico[' '])
-
     matriz = np.array(v).reshape(2, -1)
-    resultado = (np.dot(matriz_decod, matriz)) % 37
-    espaco = ''
+    resultado = (np.dot(matriz_cod, matriz)) % 37
+
+    descricao = ''
     for lin in resultado:
         for col in lin:
             if col in alfanumerico_invertido:
-                espaco = espaco + alfanumerico_invertido[col]
-    return espaco
+                descricao += alfanumerico_invertido[col]
+    return descricao
 
+descricao = input("DE UMA BREVE DESCRIÇÃO DO PRODUTO: ").upper()
+descCripto = desc_cripto(descricao)
+descDecripto = desc_decripto(descCripto)
+
+print(descricao)
+print(descCripto)
+print(descDecripto)
