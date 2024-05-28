@@ -11,6 +11,7 @@ ProductController = ProductController()
 
 @routerProduct.post("/cadastrar/produto")
 async def createProduct(product:ProductRequest,request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+    print(product.product)
     try:
         #chamar a function do controller para cadastrar um novo produto
         SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
@@ -22,10 +23,12 @@ async def createProduct(product:ProductRequest,request:Request,token:str=Depends
     
 @routerProduct.put("/editar/produto/{id_product}")
 async def updateProduct(id_product,product:ProductRequest,request:Request,token:str=Depends(SimpleAuthBackend().authenticate)):
+   
     try:
         #chamar a function do controller para cadastrar um novo produto
         SimpleAuthBackend().verifyAccess(request,nivel_description="editor")
-        ProductController.updateProduct(product.product,product.price,product.status,product.unit_measure,product.id_supplier,product.id_category, id_product)
+        
+        ProductController.updateProduct(product.product,product.price,product.status,product.unit_measure,product.id_supplier,product.id_category, product.description,id_product)
         return {"message":"Produto editado com sucesso!"}
 
     except Exception as e:

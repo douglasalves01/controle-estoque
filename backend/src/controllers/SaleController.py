@@ -10,19 +10,23 @@ class SaleController:
     @staticmethod
     async def Sale(id_produto,quantidade,request:Request):
         try:
+            print(id_produto)
+            print(quantidade)
             data_atual = datetime.now()
             valor=0
-            if(id_produto is None or id_produto==""):
+            if(id_produto is None):
                 raise HTTPException(status_code=422,detail="Insira o produto no carrinho!")
-            if(quantidade is None or quantidade==""):
+            if(quantidade is None):
                 raise HTTPException(status_code=422,detail="Insira a quantidade do produto!")
             ##pegar usuário logado
+            
             user=getUserByToken(request)
             SaleController.cursor.execute("select id from tblusuario where nome=:1", [user])
             id_user=SaleController.cursor.fetchone()[0]
             ##verificar regra de negócio com a quantidade de estoque
+      
             await saleRoles.checkMinimumStock(id_produto,quantidade)
-            
+        
             for i in range(len(id_produto)):
                 produto=id_produto[i]
                 quantidade_produto=quantidade[i]

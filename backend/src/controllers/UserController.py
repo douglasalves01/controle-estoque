@@ -30,6 +30,8 @@ class UserController:
 
             if not resultName:
                 raise HTTPException(status_code=422, detail="Digite outro usuário!")
+            
+            #pega a senha do resultado do banco de dados
             hashed_senha = resultName[2]        
 
             resultVerify=pwd_context.verify(password,hashed_senha)

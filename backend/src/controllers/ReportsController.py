@@ -60,9 +60,10 @@ class ReportsController:
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar movimentações do banco de dados: " + str(e))
     @staticmethod
+    ##CONTA LUCRO   
     def getAllProfitSales():
         try:
-            ReportsController.cursor.execute("SELECT v.id,v.valor,TO_CHAR(v.data,'YYYY-MM-DD HH24:MI:SS'),SUM(p.icms),((v.valor * (c.comissao_venda))/100) + ((v.valor * c.custo_fixo)/100) +  ((((((SUM(p.icms) / v.valor) * 100) * v.valor) / 100)*v.valor)/100),v.valor - (((v.valor * (c.comissao_venda))/100) + ((v.valor * c.custo_fixo)/100) +  ((((((SUM(p.icms) / v.valor) * 100) * v.valor) / 100)*v.valor)/100)),c.margem_lucro,c.comissao_venda,c.custo_fixo FROM tblproduto p,tblvenda v,tblvendaitem vi,tblconfig c WHERE vi.id_produto = p.id AND v.id = vi.id_venda AND c.id = 1 GROUP BY v.id,v.valor,v.data,c.margem_lucro,c.comissao_venda,c.custo_fixo")
+            ReportsController.cursor.execute("select v.id,v.valor,TO_CHAR(v.data,'YYYY-MM-DD HH24:MI:SS'),sum(((vi.quantidade*p.valor)*c.comissao_venda/100) + ((vi.quantidade*p.valor)*c.custo_fixo/100)+ ((vi.quantidade*p.valor)*p.icms/100) )as custoTotal ,v.valor - sum(((vi.quantidade*p.valor)*c.comissao_venda/100) + ((vi.quantidade*p.valor)*c.custo_fixo/100)+ ((vi.quantidade*p.valor)*p.icms/100) ) from tblvendaitem vi,tblproduto p,tblconfig c,tblvenda v where vi.id_produto=p.id and vi.id_venda=v.id GROUP BY v.id,v.valor,v.data,c.margem_lucro,c.comissao_venda,c.custo_fixo")
             rows = ReportsController.cursor.fetchall()
             return rows
         except DatabaseError as e:

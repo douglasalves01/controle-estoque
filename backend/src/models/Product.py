@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
 class ProductRequest(BaseModel):
-    product: str
-    price: float
+    product: str=""
+    price: float =0
     status: str = "ativo"
-    unit_measure:str
+    unit_measure:str =""
     id_supplier: str = ""
     id_category: str = ""
     currentStock: str = 0

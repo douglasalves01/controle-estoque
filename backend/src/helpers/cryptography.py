@@ -1,6 +1,7 @@
 import numpy as np
 
 def desc_cripto(descricao):
+    print(descricao)
     alfanumerico = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11,
                     'M': 12,
                     'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23,
@@ -37,6 +38,7 @@ def desc_cripto(descricao):
     return string
 
 def desc_decripto(string):
+    print(string,"teste aqui ")
     alfanumerico = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11,
                     'M': 12,
                     'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23,
@@ -66,12 +68,13 @@ def desc_decripto(string):
         for col in lin:
             if col in alfanumerico_invertido:
                 descricao += alfanumerico_invertido[col]
+    
     return descricao
 
-descricao = input("DE UMA BREVE DESCRIÇÃO DO PRODUTO: ").upper()
-descCripto = desc_cripto(descricao)
-descDecripto = desc_decripto(descCripto)
+# descricao = input("DE UMA BREVE DESCRIÇÃO DO PRODUTO: ").upper()
+# descCripto = desc_cripto(descricao)
+# descDecripto = desc_decripto(descCripto)
 
-print(descricao)
-print(descCripto)
-print(descDecripto)
+# print(descricao)
+# print(descCripto)
+# print(descDecripto)

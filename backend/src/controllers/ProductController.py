@@ -49,6 +49,7 @@ class ProductController:
 
             # Criptografar a descrição
             descricao_cripto = desc_cripto(description)
+            print(descricao_cripto)
 
             # Inserindo produto
             ProductController.cursor.execute(
@@ -86,7 +87,7 @@ class ProductController:
             raise HTTPException(status_code=500, detail="Erro ao inserir produto no banco de dados: " + str(e))
 
     @staticmethod
-    def updateProduct(product, price, status, unit_measure, id_supplier, id_category, id_product, description):
+    def updateProduct(product, price, status, unit_measure, id_supplier, id_category, description,id_product):
         try:
             # Verificar se os campos necessários vieram nulos ou vazios
             if product is None or product == "":
@@ -117,17 +118,17 @@ class ProductController:
     def getAllProducts():
         try:
             ProductController.cursor.execute(
-                "SELECT p.id, p.produto, p.valor, p.status, p.unidade_medida, f.nome_fantasia, c.categoria, p.descricao, p.icms FROM tblproduto p, tblcategoria c, tblfornecedor f WHERE p.id_categoria = c.id AND p.id_fornecedor = f.id"
+                "SELECT p.id, p.produto, p.valor, p.status, p.unidade_medida, f.nome_fantasia, c.categoria, p.descricao_cripto, p.icms FROM tblproduto p, tblcategoria c, tblfornecedor f WHERE p.id_categoria = c.id AND p.id_fornecedor = f.id"
             )
             rows = ProductController.cursor.fetchall()
-
-            # Descriptografar as descrições
+            
             products = []
             for row in rows:
-                row = list(row)
-                row[7] = desc_decripto(row[7])
-                products.append(row)
-
+                row = list(row)  # Converta a tupla para lista
+                row[7] = desc_decripto(row[7])  # Descriptografe a descrição no índice 7
+                products.append(row)  # Adicione à lista products
+            
+            
             return products
         except DatabaseError as e:
             raise HTTPException(status_code=500, detail="Erro ao retornar produtos do banco de dados: " + str(e))
@@ -135,7 +136,7 @@ class ProductController:
     @staticmethod
     def getAllProductsActive():
         try:
-            ProductController.cursor.execute("select * from tblproduto where status='ativo'")
+            ProductController.cursor.execute("SELECT p.id, p.produto, p.status, e.estoque_atual, e.estoque_minimo FROM tblproduto p JOIN tblestoque e ON p.id = e.id_produto WHERE p.status = 'ativo' AND e.estoque_atual > e.estoque_minimo ORDER BY p.id")
             rows = ProductController.cursor.fetchall()
             return rows
         except DatabaseError as e:
